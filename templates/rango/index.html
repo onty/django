@@ -6,7 +6,7 @@
       <title>Rango</title>
 </head>
    <body>
-        <h1>Rango says...Hello World</h1>
+        <h1>Top 5 categories</h1>
         {% if categories %}
             <ul>
                 {% for category in categories %}
@@ -20,6 +20,22 @@
         {% else %}
             <strong> No category present</strong>
         {% endif %}
+        <br/>
+        <h1>Top 5 pages</h1>
+        {%if pages %}
+            <ul>
+                {% for page in pages %}
+                <li>
+                    <a href="{{ page.url }}">
+                        {{ page.title }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <strong> No Page present </strong>
+        {% endif %}
+        <br/>
         <a href="/rango/about/">About</a><br />
         <img src="{% static "rango.png" %}" alt="picture of rango" />
 </body>
