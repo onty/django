@@ -4,7 +4,7 @@ from django.shortcuts import render_to_response
 from rango.models import Category
 from rango.models import Page
 from rango.forms import CategoryForm
-
+from rango.forms import PageForm
 
 def index(request):
     context = RequestContext(request)
@@ -43,8 +43,8 @@ def category(request, category_name_url):
         pages = Page.objects.filter(category=category)
         context_dict['pages'] = pages
         context_dict['category'] = category
-    except category.DoesNotExist:
-        pass
+    except  Category.DoesNotExist:
+        return render_to_response('rango/category_not_found.html', context_dict, context)
 
     return render_to_response('rango/category.html', context_dict, context)
 
@@ -78,7 +78,7 @@ def add_category(request):
 def add_page(request, category_name_url):
     context = RequestContext(request)
 
-    category_name = decode_url(category_name_url)
+    category_name = UrlHelper('decode',category_name_url)
     if request.method == 'POST':
         form = PageForm(request.POST)
 
