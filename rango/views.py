@@ -25,7 +25,8 @@ def index(request):
 
 
 def about(request):
-    return HttpResponse("About page, click <a href='/rango/'>here</a> to return")
+    context = RequestContext(request)
+    return render_to_response('rango/about.html', {}, context)
 
 def UrlHelper(function, input):
     print function
