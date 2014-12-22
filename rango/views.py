@@ -42,6 +42,7 @@ def category(request, category_name_url):
     context = RequestContext(request)
     #category_name = category_name_url.replace('_',' ')
     category_name = UrlHelper('decode',category_name_url)
+    print category_name_url
     context_dict = {'category_name': category_name}
 
     try:
@@ -49,6 +50,7 @@ def category(request, category_name_url):
         pages = Page.objects.filter(category=category)
         context_dict['pages'] = pages
         context_dict['category'] = category
+        context_dict['category_name_url'] = category_name_url
     except  Category.DoesNotExist:
         return render_to_response('rango/category_not_found.html', context_dict, context)
 
