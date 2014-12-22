@@ -4,12 +4,12 @@ import os
 SETTINGS_DIR = os.path.dirname(__file__)
 PROJECT_PATH = os.path.join(SETTINGS_DIR, os.pardir)
 PROJECT_PATH = os.path.abspath(PROJECT_PATH)
-print PROJECT_PATH
+LOGIN_URL = '/rango/login/'
 TEMPLATE_PATH = os.path.join(PROJECT_PATH, 'templates')
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_PATH = os.path.join(PROJECT_PATH, 'static')
-print STATIC_PATH
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 DATABASE_PATH = os.path.join(PROJECT_PATH, 'rango.db')
