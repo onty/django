@@ -10,6 +10,8 @@ from rango.forms import CategoryForm
 from rango.forms import PageForm
 from rango.forms import UserForm
 from rango.forms import UserProfileForm
+from datetime import datetime
+
 
 def index(request):
     context = RequestContext(request)
@@ -21,8 +23,34 @@ def index(request):
         # category.url = category.name.replace(' ', '_')
         category.url = UrlHelper('encode',category.name)
 
-    return render_to_response('rango/index.html', context_dict, context)
+    #### NEW CODE ####
+    # Obtain our Response object early so we can add cookie information.
+    response = render_to_response('rango/index.html', context_dict, context)
 
+    # Get the number of visits to the site.
+    # We use the COOKIES.get() function to obtain the visits cookie.
+    # If the cookie exists, the value returned is casted to an integer.
+    # If the cookie doesn't exist, we default to zero and cast that.
+    visits = int(request.COOKIES.get('visits', '0'))
+
+    #### NEW CODE ####
+    if request.session.get('last_visit'):
+        # The session has a value for the last visit
+        last_visit_time = request.session.get('last_visit')
+        visits = request.session.get('visits', 0)
+
+        if (datetime.now() - datetime.strptime(last_visit_time[:-7], "%Y-%m-%d %H:%M:%S")).days > 0:
+            request.session['visits'] = visits + 1
+            request.session['last_visit'] = str(datetime.now())
+    else:
+        # The get returns None, and the session does not have a value for the last visit.
+        request.session['last_visit'] = str(datetime.now())
+        request.session['visits'] = 1
+    #### END NEW CODE ####
+
+    # Render and return the rendered response back to the user.
+    return render_to_response('rango/index.html', context_dict, context)
+    
 
 def about(request):
     context = RequestContext(request)
@@ -31,10 +59,8 @@ def about(request):
 def UrlHelper(function, input):
     print function
     if function.lower() == 'encode':
-        print input
         return input.replace(' ','_')
     elif function.lower() == 'decode':
-        print input
         return input.replace('_',' ')
 
 
@@ -129,9 +155,6 @@ def add_page(request, category_name_url):
 def register(request):
     # Like before, get the request's context.
     context = RequestContext(request)
-    if request.session.test_cookie_worked():
-        print ">>>> TEST COOKIE WORKED!"
-        request.session.delete_test_cookie()
     # A boolean value for telling the template whether the registration was successful.
     # Set to False initially. Code changes value to True when registration succeeds.
     registered = False
