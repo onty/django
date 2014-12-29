@@ -14,6 +14,7 @@ from rango.forms import UserProfileForm
 from datetime import datetime
 from rango.bing_search import run_query
 from django.contrib.auth.models import User
+from django.shortcuts import redirect
 
 
 def index(request):
@@ -87,7 +88,7 @@ def get_category_list():
 
     list = Category.objects.all()
     for i in list:
-        list.url = UrlHelper('encode',i.name)
+        i.url = UrlHelper('encode',i.name)
 
     return list
 
@@ -104,6 +105,7 @@ def category(request, category_name_url):
         context_dict['pages'] = pages
         context_dict['category'] = category
         context_dict['category_name_url'] = category_name_url
+        context_dict['cat_list'] = get_category_list
     except  Category.DoesNotExist:
         return render_to_response('rango/category_not_found.html', context_dict, context)
 
@@ -186,6 +188,19 @@ def add_page(request, category_name_url):
              'category_name': category_name, 'form': form},
              context)
 
+def track_url(request):
+    if request.method == 'GET':
+        if 'page_id' in request.GET:
+            try: 
+                page_id = request.GET['page_id']
+                page = Page.objects.get(id=page_id)
+                url = page.url
+                page.views = page.views + 1
+                page.save()
+            except:
+                pass
+
+    return redirect(url)
 
 def register(request):
     # Like before, get the request's context.
