@@ -54,8 +54,14 @@ def index(request):
 
 def about(request):
     context = RequestContext(request)
-    return render_to_response('rango/about.html', {}, context)
+    if request.session.get('visits'):
+        count = request.session.get('visits')
+    else:
+        count = 0
 
+# remember to include the visit data
+    return render_to_response('rango/about.html', {'visit_count': count}, context)
+    
 def UrlHelper(function, input):
     print function
     if function.lower() == 'encode':
@@ -68,7 +74,6 @@ def category(request, category_name_url):
     context = RequestContext(request)
     #category_name = category_name_url.replace('_',' ')
     category_name = UrlHelper('decode',category_name_url)
-    print category_name_url
     context_dict = {'category_name': category_name}
 
     try:
