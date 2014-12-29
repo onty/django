@@ -1,0 +1,1 @@
+11.2 load_static first before loading static rango.png

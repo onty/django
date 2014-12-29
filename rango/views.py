@@ -6,19 +6,21 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response
 from rango.models import Category
 from rango.models import Page
+from rango.models import UserProfile
 from rango.forms import CategoryForm
 from rango.forms import PageForm
 from rango.forms import UserForm
 from rango.forms import UserProfileForm
 from datetime import datetime
 from rango.bing_search import run_query
+from django.contrib.auth.models import User
 
 
 def index(request):
     context = RequestContext(request)
     category_list = Category.objects.order_by('-likes')[:5]
     page_list = Page.objects.order_by('-views')[:5]
-    context_dict = {'categories': category_list, 
+    context_dict = {'cat_list': category_list, 
             'pages': page_list}
     for category in category_list:
         # category.url = category.name.replace(' ', '_')
@@ -61,16 +63,35 @@ def about(request):
         count = 0
 
 # remember to include the visit data
-    return render_to_response('rango/about.html', {'visit_count': count}, context)
+    return render_to_response('rango/about.html', {'visit_count': count, 'cat_list' : get_category_list}, context)
     
 def UrlHelper(function, input):
-    print function
+    
     if function.lower() == 'encode':
         return input.replace(' ','_')
     elif function.lower() == 'decode':
         return input.replace('_',' ')
 
 
+def category_list(request):
+    context = RequestContext(request)
+    cat_list = Category.objects.order_by('-likes')
+    for category in cat_list:
+            # category.url = category.name.replace(' ', '_')
+            category.url = UrlHelper('encode',category.name)
+
+    return render_to_response('rango/category_list.html', {'cat_list':cat_list}, context)
+
+
+def get_category_list():
+
+    list = Category.objects.all()
+    for i in list:
+        list.url = UrlHelper('encode',i.name)
+
+    return list
+
+@login_required
 def category(request, category_name_url):
     context = RequestContext(request)
     #category_name = category_name_url.replace('_',' ')
@@ -78,13 +99,21 @@ def category(request, category_name_url):
     context_dict = {'category_name': category_name}
 
     try:
-        category = Category.objects.get(name=category_name)
-        pages = Page.objects.filter(category=category)
+        category = Category.objects.get(name__iexact=category_name)
+        pages = Page.objects.filter(category=category).order_by('-views')
         context_dict['pages'] = pages
         context_dict['category'] = category
         context_dict['category_name_url'] = category_name_url
     except  Category.DoesNotExist:
         return render_to_response('rango/category_not_found.html', context_dict, context)
+
+    if request.method == 'POST':
+        query = request.POST['query'].strip()
+
+        if query:
+            # Run our Bing function to get the results list!
+            result_list = run_query(query)
+            context_dict['result_list'] = result_list
 
     return render_to_response('rango/category.html', context_dict, context)
 
@@ -114,7 +143,7 @@ def add_category(request):
 
     # Bad form (or form details), no form supplied...
     # Render the form with error messages (if any).
-    return render_to_response('rango/add_category.html', {'form': form}, context)
+    return render_to_response('rango/add_category.html', {'form': form, 'cat_list': get_category_list}, context)
 
 @login_required
 def add_page(request, category_name_url):
@@ -214,7 +243,7 @@ def register(request):
     # Render the template depending on the context.
     return render_to_response(
             'rango/register.html',
-            {'user_form': user_form, 'profile_form': profile_form, 'registered': registered},
+            {'cat_list' : get_category_list,'user_form': user_form, 'profile_form': profile_form, 'registered': registered},
             context)
 
 def user_login(request):
@@ -236,7 +265,7 @@ def user_login(request):
             print "Invalid login details {0}, {1}".format(username, password)
             return HttpResponse("Invalid login details supplied.")
     else:
-        return render_to_response('rango/login.html',{},context)
+        return render_to_response('rango/login.html',{'cat_list': get_category_list},context)
 
 @login_required
 def restricted(request):
@@ -247,6 +276,21 @@ def user_logout(request):
     logout(request)
 
     return HttpResponseRedirect('/rango/')
+
+@login_required
+def profile(request):
+    context = RequestContext(request)
+    u = User.objects.get(username=request.user)
+
+    try:
+        up = UserProfile.objects.get(user=u)
+        
+    except:
+        up = None
+
+    return render_to_response('rango/profile.html', 
+        {'cat_list' : get_category_list, 'user': u, 'userProfile': up}, 
+        context)
 
 def search(request):
     context = RequestContext(request)
