@@ -19,7 +19,7 @@ from django.shortcuts import redirect
 
 def index(request):
     context = RequestContext(request)
-    category_list = Category.objects.order_by('-likes')[:5]
+    category_list = Category.objects.order_by('-name')
     page_list = Page.objects.order_by('-views')[:5]
     context_dict = {'cat_list': category_list, 
             'pages': page_list}
@@ -102,7 +102,7 @@ def get_category_list(max_result=0,starts_with=''):
         cat_list = Category.objects.filter(name__istartswith=starts_with)
         
     else:
-        cat_list = Category.objects.all()
+        cat_list = Category.objects.all().order_by('-name')
 
     if max_result > 0:
         if len(cat_list) > max_result:
@@ -113,6 +113,31 @@ def get_category_list(max_result=0,starts_with=''):
 
     return cat_list
 
+@login_required
+def auto_add_page(request):    
+    context = RequestContext(request)
+    strHtml = ''
+    cat_id = None
+    title = None
+    url = None
+
+    if request.method == 'GET':
+        cat_id = request.GET['category_id']
+        url = request.GET['url']
+        title = request.GET['title']
+
+        if cat_id:
+            category = Category.objects.get(id=int(cat_id))
+            Page.objects.get_or_create(category=category, title=title, url=url)
+        
+        strHtml = "<ul>"
+        for page in Page.objects.filter(category=category):
+                strHtml = strHtml + "<li><a href=\"/rango/goto/?page_id=" + str(page.id) + "\">" + page.title + " - "+ str(page.views) + "</a></li>"
+            
+        strHtml = strHtml + "</ul>"
+
+        
+    return HttpResponse(strHtml)
 
 @login_required
 def like_category(request):
@@ -225,7 +250,8 @@ def add_page(request, category_name_url):
 
     return render_to_response( 'rango/add_page.html',
             {'category_name_url': category_name_url,
-             'category_name': category_name, 'form': form},
+             'category_name': category_name, 'form': form, 
+             'cat_list' : get_category_list},
              context)
 
 def track_url(request):
@@ -303,24 +329,28 @@ def register(request):
 
 def user_login(request):
     context = RequestContext(request)
+    dict_list = {'cat_list' : get_category_list}
 
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
+        
 
         user = authenticate(username=username, password=password)
+        print dir(user)
 
         if user:
             if user.is_active:
                 login(request, user)
                 return HttpResponseRedirect('/rango/')
             else:
-                return HttpResponse("Your Rango account is disabled !")
+                dict_list['disabled_account'] = 1
         else:
+            dict_list['bad_details'] = 1
             print "Invalid login details {0}, {1}".format(username, password)
-            return HttpResponse("Invalid login details supplied.")
-    else:
-        return render_to_response('rango/login.html',{'cat_list': get_category_list},context)
+
+    
+    return render_to_response('rango/login.html',dict_list,context)
 
 @login_required
 def restricted(request):

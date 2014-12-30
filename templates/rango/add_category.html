@@ -4,9 +4,9 @@
 
 
  {% block body_block %}
-<div class="hero-unit">
-    <h1>Add a Category</h1>
-    <br/>
+
+    <h2>Add a Category</h2>
+
     <div class="container">
         <form class="span6" id="category_form" method="post" action="/rango/add_category/">
             {% csrf_token %}
@@ -21,8 +21,8 @@
             {% endfor %}
 
             <br/>
-            <button class="btn btn-primary" type="submit" name="submit">Create Category</button>
+            <button class="btn btn-primary" type="submit" name="submit">Create</button>
         </form>
     </div>
-</div>
+
 {% endblock %}

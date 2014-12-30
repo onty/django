@@ -19,5 +19,21 @@ $(document).ready(function() {
 
  });
 
+$('.rango-add').click(function(){
+    var catid;
+    var title; 
+    var url;
+    catid = $(this).attr("data-catid");
+	title = $(this).attr("data-title");
+	url = $(this).attr("data-url");
+	
+     $.get('/rango/auto_add_page/', {category_id: catid, url: url, title : title}, function(data){
+               // add action response here
+               $('#pagelist').html(data);
+               
+           });
+});
+
+
 	}
 );

@@ -18,6 +18,7 @@ urlpatterns = patterns('',
         url(r'^goto/$', views.track_url, name='count pageclick'),
         url(r'^profile/$', views.profile, name='user profile'),
         url(r'^like_category/$', views.like_category, name='ajax for like_category'),
-        url(r'^suggest_category/$',views.suggest_category, name='category suggestor')
-        
+        url(r'^suggest_category/$',views.suggest_category, name='category suggestor'),
+        url(r'^auto_add_page/$',views.auto_add_page, name='auto add page from search result'),
+               
 )
