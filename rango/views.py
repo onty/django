@@ -83,14 +83,36 @@ def category_list(request):
 
     return render_to_response('rango/category_list.html', {'cat_list':cat_list}, context)
 
+def suggest_category(request):
+    context = RequestContext(request)
+    cat_list = []
+    starts_with = ''
 
-def get_category_list():
+    if request.method == 'GET':
+        starts_with = request.GET['suggestion']
 
-    list = Category.objects.all()
-    for i in list:
-        i.url = UrlHelper('encode',i.name)
+    cat_list = get_category_list(8,starts_with)
 
-    return list
+    return render_to_response('rango/category_list.html', {'cat_list' : cat_list}, context)
+
+def get_category_list(max_result=0,starts_with=''):
+    cat_list = []
+
+    if starts_with:
+        cat_list = Category.objects.filter(name__istartswith=starts_with)
+        
+    else:
+        cat_list = Category.objects.all()
+
+    if max_result > 0:
+        if len(cat_list) > max_result:
+            cat_list = cat_list[:max_result]
+
+    for cat in cat_list:
+        cat.url = UrlHelper('encode', cat.name)
+
+    return cat_list
+
 
 @login_required
 def like_category(request):

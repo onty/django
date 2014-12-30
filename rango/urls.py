@@ -6,8 +6,7 @@ urlpatterns = patterns('',
         url(r'^$', views.index, name='index'),
         url(r'^about/', views.about, name='about'),
         url(r'^category/$', views.category_list, name='category_list'),
-        url(r'^category/(?P<category_name_url>\w+)/$', views.category,
-        name='category'),
+        url(r'^category/(?P<category_name_url>\w+)/$', views.category, name='category'),
         url(r'^add_category/$', views.add_category, name='add_category'),
         url(r'^add_pages/$', views.add_page, name='add_page'),
         url(r'^add_pages/(?P<category_name_url>\w+)/$', views.add_page, name='add_page'),
@@ -19,5 +18,6 @@ urlpatterns = patterns('',
         url(r'^goto/$', views.track_url, name='count pageclick'),
         url(r'^profile/$', views.profile, name='user profile'),
         url(r'^like_category/$', views.like_category, name='ajax for like_category'),
+        url(r'^suggest_category/$',views.suggest_category, name='category suggestor')
         
 )
