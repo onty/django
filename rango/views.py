@@ -93,6 +93,24 @@ def get_category_list():
     return list
 
 @login_required
+def like_category(request):
+    context = RequestContext(request)
+    cat_id = None
+    if request.method == 'GET':
+        cat_id = request.GET['category_id']
+
+    likes = 0
+    if cat_id:
+        category = Category.objects.get(id=int(cat_id))
+        if category:
+            likes = category.likes+1
+            category.likes = likes
+            category.save()
+
+    return HttpResponse(likes)
+
+
+@login_required
 def category(request, category_name_url):
     context = RequestContext(request)
     #category_name = category_name_url.replace('_',' ')

@@ -18,4 +18,6 @@ urlpatterns = patterns('',
         url(r'^search/$', views.search, name='search'),
         url(r'^goto/$', views.track_url, name='count pageclick'),
         url(r'^profile/$', views.profile, name='user profile'),
+        url(r'^like_category/$', views.like_category, name='ajax for like_category'),
+        
 )
