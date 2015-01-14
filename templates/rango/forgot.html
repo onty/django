@@ -1,0 +1,29 @@
+{% extends 'rango/base.html' %}
+
+{% block title %}Forgot Password{% endblock %}
+
+
+ {% block body_block %}
+<div class="hero-unit">
+    <h1>So, you forgot your password ?</h1>
+
+    <div class="container">
+    <form class="form-signin span4" id="login_form" method="post" action="/rango/forgot/">
+        <h2 class="form-signin-heading">Please enter your email address here :</h2>
+        {% csrf_token %}
+
+        {% if email %}
+        <p><strong>Email has been sent to {{ email }}. Please check.</strong></p>
+        {% endif %}
+
+        Email: <input type="text" class="input-block-level" placeholder="Your Email Address Here" name="email" value="" size="50" />
+        <br />
+
+        <button class="btn btn-primary" type="submit">Reset My Password</button>
+    </form>
+
+    </div>
+    <!-- /container -->
+</div>
+
+{% endblock %}

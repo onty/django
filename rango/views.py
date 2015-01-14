@@ -377,6 +377,20 @@ def profile(request):
         {'cat_list' : get_category_list, 'user': u, 'userProfile': up}, 
         context)
 
+def forgot(request):
+    context = RequestContext(request)
+    email = None 
+    if request.method == 'POST':
+        email = request.POST['email']
+        reset_password(email)
+
+    return render_to_response('rango/forgot.html', 
+        {'cat_list' : get_category_list, 'email' : email}, 
+        context)
+
+def reset_password(email):
+    pass
+
 def search(request):
     context = RequestContext(request)
     result_list = []
