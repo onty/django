@@ -15,10 +15,8 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 DATABASE_PATH = os.path.join(PROJECT_PATH, 'rango.db')
 
-SENDGRID_EMAIL_HOST = "smtp.sendgrid.net"
-SENDGRID_EMAIL_PORT = 587
-SENDGRID_EMAIL_USERNAME = os.environ['SENDGRID_USERNAME']
-SENDGRID_EMAIL_PASSWORD = os.environ['SENDGRID_PASSWORD']
+EMAIL_USERNAME = os.environ['SENDGRID_USERNAME']
+EMAIL_PASSWORD = os.environ['SENDGRID_PASSWORD']
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -144,7 +142,6 @@ INSTALLED_APPS = (
     'rango',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
-    'sendgrid',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
