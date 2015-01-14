@@ -17,8 +17,8 @@ DATABASE_PATH = os.path.join(PROJECT_PATH, 'rango.db')
 
 SENDGRID_EMAIL_HOST = "smtp.sendgrid.net"
 SENDGRID_EMAIL_PORT = 587
-SENDGRID_EMAIL_USERNAME = "onty"
-SENDGRID_EMAIL_PASSWORD = "Bismillah123"
+SENDGRID_EMAIL_USERNAME = os.environ['SENDGRID_USERNAME']
+SENDGRID_EMAIL_PASSWORD = os.environ['SENDGRID_PASSWORD']
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
