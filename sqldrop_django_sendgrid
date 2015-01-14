@@ -1,0 +1,19 @@
+BEGIN;
+DROP TABLE "sendgrid_event";
+DROP TABLE "sendgrid_eventtype";
+DROP TABLE "sendgrid_emailmessagetodata";
+DROP TABLE "sendgrid_emailmessageccdata";
+DROP TABLE "sendgrid_emailmessagebccdata";
+DROP TABLE "sendgrid_emailmessageattachmentsdata";
+DROP TABLE "sendgrid_emailmessagebodydata";
+DROP TABLE "sendgrid_emailmessageextraheadersdata";
+DROP TABLE "sendgrid_emailmessagesendgridheadersdata";
+DROP TABLE "sendgrid_emailmessagesubjectdata";
+DROP TABLE "sendgrid_uniqueargument";
+ALTER TABLE "sendgrid_emailmessage_categories" DROP CONSTRAINT "emailmessage_id_refs_id_7ae04128";
+DROP TABLE "sendgrid_emailmessage";
+DROP TABLE "sendgrid_emailmessage_categories";
+DROP TABLE "sendgrid_argument";
+DROP TABLE "sendgrid_category";
+
+COMMIT;
