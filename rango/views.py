@@ -380,16 +380,25 @@ def profile(request):
 def forgot(request):
     context = RequestContext(request)
     email = None 
+    context_dict['cat_list'] = get_category_list
     if request.method == 'POST':
         email = request.POST['email']
-        reset_password(email)
+        try:
+            username = User.objects.get(email=email)
+            context_dict['email'] = email
+            save_reset_password_request(email, username)
+        except User.DoesNotExist as e:
+            context_dict['no_username'] = 1
+        
 
-    return render_to_response('rango/forgot.html', 
-        {'cat_list' : get_category_list, 'email' : email}, 
-        context)
+    return render_to_response('rango/forgot.html', context_dict, context)
 
-def reset_password(email):
-    pass
+def save_reset_password_request(email, username):
+    print 'Saving reset request..'
+    print 'Email :%s ' % email
+    print 'Username :%s' % username
+    print 'url hash :%s' % encode([username])
+    
 
 def search(request):
     context = RequestContext(request)
