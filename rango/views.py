@@ -381,7 +381,7 @@ def forgot(request):
     context = RequestContext(request)
     email = None 
     context_dict = []
-    context_dict['cat_list'] = get_category_list
+    context_dict = {'cat_list' : get_category_list}
     if request.method == 'POST':
         email = request.POST['email']
         try:
