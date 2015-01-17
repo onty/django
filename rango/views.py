@@ -15,6 +15,7 @@ from datetime import datetime
 from rango.bing_search import run_query
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
+from rango.password_reset import encode, decode
 
 
 def index(request):
@@ -398,7 +399,7 @@ def save_reset_password_request(email, username):
     print 'Saving reset request..'
     print 'Email :%s ' % email
     print 'Username :%s' % username
-    print 'url hash :%s' % encode([username])
+    print encode([username])
     
 
 def search(request):
